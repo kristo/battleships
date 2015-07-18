@@ -22,7 +22,7 @@ class Battleships
         puts "Invalid input. Try again ..."
         next
       end
-      exit if player_turn(input)
+      break if player_turn(input)
     end
   end
 
@@ -43,7 +43,10 @@ class Battleships
     end
     puts message
     puts @board
-    puts "Well done! You completed the game in #{attempts} shots" and return true if finished?
+    if finished?
+      puts "Well done! You completed the game in #{attempts} shots"
+      return true
+    end
     false
   end
 
@@ -54,7 +57,7 @@ class Battleships
   end
 
   def attempts
-    @board.grid.flatten.select {|cell| [:hit, :missed].include? cell.status }.size
+    @board.grid.flatten.select { |cell| [:hit, :missed].include? cell.status }.size
   end
 
   def valid_input?(input)
