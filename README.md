@@ -1,1 +1,3 @@
 # battleships
+
+Run main.rb
