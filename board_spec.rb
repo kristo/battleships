@@ -3,9 +3,7 @@ require './ship'
 
 describe Board do
 
-  subject(:board) do
-    Board.new
-  end
+  subject(:board) { Board.new }
 
   context 'board initialization' do
     it 'creates 10x10 board' do
@@ -19,8 +17,8 @@ describe Board do
         board.place(Ship.new(5))
         board.place(Ship.new(4))
         board.place(Ship.new(4))
-        cells_with_ships = board.grid.flatten.select { |cell| cell.ship }
-        cells_with_ships.uniq! { |cell| cell.ship }
+        cells_with_ships = board.grid.flatten.select(&:ship)
+        cells_with_ships.uniq!(&:ship)
         expect(cells_with_ships.size).to eq(3)
       end
 
@@ -28,13 +26,12 @@ describe Board do
         board.place(Ship.new(5))
         board.place(Ship.new(4))
         board.place(Ship.new(4))
-        expect(board.grid.flatten.select { |cell| cell.status == :occupied }.size).to eq(5 + 4 + 4)
+        expect(board.grid.flatten.select { |cell| cell.occupied? }.size).to eq(5 + 4 + 4)
       end
 
       it 'cannot place a longer ship than dimension of the board' do
         expect { board.place(Ship.new(11)) }.to raise_error(RuntimeError)
       end
-
     end
   end
 
@@ -47,5 +44,4 @@ describe Board do
       end
     end
   end
-
 end

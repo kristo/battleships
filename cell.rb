@@ -15,4 +15,8 @@ class Cell
     self.status = status
     self.ship.squares -= 1 if status == :hit
   end
+
+  def occupied?
+    status == :occupied
+  end
 end

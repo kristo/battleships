@@ -77,6 +77,6 @@ class Board
   end
 
   def overlapped?(fields)
-    fields.any? { |cell| cell.status == :occupied }
+    fields.any? { |cell| cell.occupied? }
   end
 end
