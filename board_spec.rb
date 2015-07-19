@@ -13,7 +13,7 @@ describe Board do
     end
   end
 
-  context 'placing ships' do
+  context 'placing the ships' do
     describe '#place' do
       it 'creates a board with 3 ships' do
         board.place(Ship.new(5))
@@ -30,6 +30,11 @@ describe Board do
         board.place(Ship.new(4))
         expect(board.grid.flatten.select { |cell| cell.status == :occupied }.size).to eq(5 + 4 + 4)
       end
+
+      it 'cannot place a longer ship than dimension of the board' do
+        expect { board.place(Ship.new(11)) }.to raise_error(RuntimeError)
+      end
+
     end
   end
 
@@ -38,6 +43,7 @@ describe Board do
       it 'shows the ships' do
         board.place(Ship.new(5))
         expect(board.reveal_ships).to include('1 2 3 4 5 6 7 8 9 10')
+        expect(board.reveal_ships.count('X')).to eq 5
       end
     end
   end

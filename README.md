@@ -1,3 +1,4 @@
 # battleships
 
-Run main.rb
+Type ruby run.rb to start the game
+

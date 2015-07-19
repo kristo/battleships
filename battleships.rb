@@ -27,12 +27,12 @@ class Battleships
   end
 
   def reveal_ships
-    puts @board.reveal_ships
+    puts board.reveal_ships
   end
 
   def player_turn(input)
-    x, y = ('A'..'J').to_a.find_index(input[0]), input[1..-1].to_i - 1
-    cell = @board.cell(x, y)
+    x, y = x_input(input[0]), y_input(input[1..-1])
+    cell = board.cell(x, y)
     if cell.ship?
       cell.update :hit
       message = "Hit"
@@ -42,7 +42,7 @@ class Battleships
       message = "Miss"
     end
     puts message
-    puts @board
+    puts board
     if finished?
       puts "Well done! You completed the game in #{attempts} shots"
       return true
@@ -52,12 +52,20 @@ class Battleships
 
   private
 
+  def x_input(input)
+    ('A'..'J').to_a.find_index(input)
+  end
+
+  def y_input(input)
+    input.to_i - 1
+  end
+
   def finished?
-    @board.grid.flatten.all? { |cell| cell.status != :occupied }
+    board.grid.flatten.all? { |cell| cell.status != :occupied }
   end
 
   def attempts
-    @board.grid.flatten.select { |cell| [:hit, :missed].include? cell.status }.size
+    board.grid.flatten.select { |cell| [:hit, :missed].include? cell.status }.size
   end
 
   def valid_input?(input)

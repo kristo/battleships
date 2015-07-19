@@ -11,21 +11,9 @@ class Board
   end
 
   def place(ship)
+    fail "Ship too long" if ship.squares > BOARD_SIZE
     loop do
-      cells = []
-      orientation = [:horizontal, :vertical].sample
-      case orientation
-        when :horizontal
-          start_position_x, start_position_y = (0...BOARD_SIZE-ship.squares).to_a.sample, (0...BOARD_SIZE).to_a.sample
-          ship.squares.times do |index|
-            cells << @grid[start_position_x+index][start_position_y]
-          end
-        when :vertical
-          start_position_x, start_position_y = (0...BOARD_SIZE).to_a.sample, (0...BOARD_SIZE-ship.squares).to_a.sample
-          ship.squares.times do |index|
-            cells << @grid[start_position_x][start_position_y+index]
-          end
-      end
+      cells = select_cells(ship.squares)
       redo if overlapped?(cells)
       cells.map do |cell|
         cell.status = :occupied
@@ -36,15 +24,15 @@ class Board
   end
 
   def cell(x, y)
-    @grid[x][y]
+    grid[x][y]
   end
 
   def reveal_ships
     board = "- 1 2 3 4 5 6 7 8 9 10\n"
     letter = 'A'
-    @grid.each do |row|
+    grid.each do |row|
       board << letter + row.collect { |cell| cell.ship? ? ' X' : '  ' }.join('') + "\n"
-      letter = letter.next
+      letter.next!
     end
     board
   end
@@ -52,7 +40,7 @@ class Board
   def to_s
     board = "- 1 2 3 4 5 6 7 8 9 10\n"
     letter = 'A'
-    @grid.each do |row|
+    grid.each do |row|
       line = row.collect do |cell|
         case cell.status
           when :hit
@@ -64,12 +52,29 @@ class Board
         end
       end.join('')
       board << letter + line + "\n"
-      letter = letter.next
+      letter.next!
     end
     board
   end
 
   private
+
+  def select_cells(length)
+    cells = []
+    case [:horizontal, :vertical].sample
+      when :horizontal
+        start_position_x, start_position_y = (0...BOARD_SIZE-length).to_a.sample, (0...BOARD_SIZE).to_a.sample
+        length.times do |index|
+          cells << grid[start_position_x+index][start_position_y]
+        end
+      when :vertical
+        start_position_x, start_position_y = (0...BOARD_SIZE).to_a.sample, (0...BOARD_SIZE-length).to_a.sample
+        length.times do |index|
+          cells << grid[start_position_x][start_position_y+index]
+        end
+    end
+    cells
+  end
 
   def overlapped?(fields)
     fields.any? { |cell| cell.status == :occupied }
